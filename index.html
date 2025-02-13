@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template Centré</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #ff00ff;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-family: 'Great Vibes', cursive;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            background: #007BFF;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .popup {
+            position: absolute;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .popup button {
+            margin: 10px;
+        }
+        .green-button {
+            background: green;
+        }
+        .green-button:hover {
+            background: darkgreen;
+        }
+        .red-button {
+            background: red;
+        }
+        .red-button:hover {
+            background: darkred;
+        }
+        .big-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60%;
+            height: 60%;
+            background: url('https://images.pexels.com/photos/3692602/pexels-photo-3692602.jpeg') center/cover;
+            border-radius: 20px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+            color: white;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: red;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .close-button:hover {
+            background: darkred;
+        }
+    </style>
+    <script>
+        let confirmationLevels = [
+            "Êtes-vous sûr ?", 
+            "Êtes-vous vraiment sûr ?", 
+            "Êtes-vous sûr d'être sûr ?", 
+            "Vraiment sûr de sûr ?", 
+            "Dernière chance, êtes-vous absolument certain ?", 
+            "Tu change pas d'avis t'es sur?", 
+            "Réfléchis bien...", 
+            "C'est ta dernière opportunité de dire oui !",
+            "T'es sérieuse?",
+            "Tu m'aime pas?"
+        ];
+        let level = 0;
+        
+        function showBigPopup() {
+            let bigPopup = document.createElement("div");
+            bigPopup.className = "big-popup";
+            
+            let message = document.createElement("div");
+            message.textContent = "Est-ce que tu m'aimes ?";
+            
+            let closeButton = document.createElement("button");
+            closeButton.className = "close-button";
+            closeButton.textContent = "X";
+            closeButton.onclick = () => {
+                document.body.removeChild(bigPopup);
+                if (document.querySelector("audio")) {
+                    document.querySelector("audio").remove();
+                }
+            };
+            
+            let yesButton = document.createElement("button");
+            yesButton.textContent = "Oui";
+            yesButton.className = "green-button";
+            yesButton.onclick = () => {
+                //Cette ligne est pour Mathilde.
+                showFinalMessage("Je t'aime plus par contre! 😘", "careless_whispers.mp3");
+            };
+            
+            let noButton = document.createElement("button");
+            noButton.textContent = "Non";
+            noButton.className = "red-button";
+            noButton.onclick = () => {
+                showFinalMessage("Y'en a au moins un de nous deux qui aime l'autre.... 🥲", "https://www.myinstants.com/media/sounds/sad-violin.mp3");
+            };
+            
+            let buttonContainer = document.createElement("div");
+            buttonContainer.style.marginTop = "20px";
+            buttonContainer.style.display = "flex";
+            buttonContainer.style.gap = "10px";
+            buttonContainer.appendChild(yesButton);
+            buttonContainer.appendChild(noButton);
+            
+            bigPopup.appendChild(closeButton);
+            bigPopup.appendChild(message);
+            bigPopup.appendChild(buttonContainer);
+            document.body.appendChild(bigPopup);
+        }
+        
+        function showFinalMessage(text, audioSrc) {
+            let bigPopup = document.querySelector(".big-popup");
+            bigPopup.innerHTML = "";
+            
+            let closeButton = document.createElement("button");
+            closeButton.className = "close-button";
+            closeButton.textContent = "X";
+            closeButton.onclick = () => {
+                document.body.removeChild(bigPopup);
+                if (document.querySelector("audio")) {
+                    document.querySelector("audio").remove();
+                }
+            };
+            
+            let message = document.createElement("div");
+            message.textContent = text;
+            
+            bigPopup.appendChild(closeButton);
+            bigPopup.appendChild(message);
+            
+            if (document.querySelector("audio")) {
+                document.querySelector("audio").remove();
+            }
+            let audio = document.createElement("audio");
+            audio.src = audioSrc;
+            audio.autoplay = true;
+            audio.loop = true;
+            document.body.appendChild(audio);
+            audio.play();
+        }
+
+        function showPopup() {
+            let popup = document.createElement("div");
+            popup.className = "popup";
+            popup.innerHTML = `<p>${confirmationLevels[Math.min(level, confirmationLevels.length - 1)]}</p>`;
+            
+            let yesButton = document.createElement("button");
+            yesButton.textContent = "Oui";
+            yesButton.onclick = () => {
+                level++;
+                let audio = new Audio("https://www.myinstants.com/media/sounds/vine-boom-sound.mp3");
+                audio.play();
+                showPopup();
+            };
+            
+            let noButton = document.createElement("button");
+            noButton.textContent = "Non";
+            noButton.onclick = () => {
+                document.querySelectorAll(".popup").forEach(p => p.remove());
+                level = 0;
+            };
+            
+            popup.appendChild(yesButton);
+            popup.appendChild(noButton);
+            
+            document.body.appendChild(popup);
+            
+            let x = Math.random() * (window.innerWidth - 200);
+            let y = Math.random() * (window.innerHeight - 100);
+            popup.style.left = `${x}px`;
+            popup.style.top = `${y}px`;
+            popup.style.position = "absolute";
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Est ce que tu voudrais être ma valentine?</h1>
+        <div class="buttons">
+            <button class="green-button" onclick="showBigPopup()">Oui!</button>
+            <button class="red-button" onclick="showPopup()">Non</button>
+        </div>
+    </div>
+</body>
+</html>
